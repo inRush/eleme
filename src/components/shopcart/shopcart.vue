@@ -39,7 +39,7 @@
                     <span>￥{{food.price * food.count}}</span>
                   </div>
                   <div class="cartcontrol-wrapper">
-                    <cartcontrol :food="food"></cartcontrol>
+                    <cartcontrol :event-hub="eventHub" :food="food"></cartcontrol>
                   </div>
                 </li>
               </ul>
@@ -74,6 +74,9 @@ export default {
     minPrice: {
       type: Number,
       default: 0,
+    },
+    eventHub: {
+      type: Object,
     },
   },
   data() {

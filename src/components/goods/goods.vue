@@ -1,51 +1,52 @@
 ˛<template>
-  <div class="">
-    <div class="goods">
-      <div class="menu-wrapper" ref='menuWrapper'>
-        <ul>
-          <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex === index}" @click="selectMenu(index,$event)">
-            <span class="text border-1px">
-              <span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
-            </span>
-          </li>
-        </ul>
+  <transition name="goods">
+    <div class="goods-wrapper">
+      <div class="goods">
+        <div class="menu-wrapper" ref='menuWrapper'>
+          <ul>
+            <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex === index}" @click="selectMenu(index,$event)">
+              <span class="text border-1px">
+                <span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div class="foods-wrapper" ref='foodsWrapper'>
+          <ul>
+            <li v-for="item in goods" class="food-list food-list-hook">
+              <h1 class="title">{{item.name}}</h1>
+              <ul>
+                <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item border-1px">
+                  <div class="icon">
+                    <img width="57" height="57" :src="food.icon"></img>
+                  </div>
+                  <div class="content">
+                    <h2 class="name">{{food.name}}</h2>
+                    <p class="desc">{{food.description}}</p>
+                    <div class="extra">
+                      <span class="count">月售{{food.sellCount}}份</span>
+                      <span>好评率{{food.rating}}%</span>
+                    </div>
+                    <div class="price">
+                      <span class="now">
+                        <span class="doller">¥</span>{{food.price}}</span>
+                      <span class="old" v-show="food.oldPrice">
+                        ¥{{food.oldPrice}}</span>
+                    </div>
+                    <div class="cartcontrol-wrapper">
+                      <cartcontrol :event-hub="eventHub" :food="food"></cartcontrol>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <shopcart ref='shopcart' :event-hub="eventHub" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
       </div>
-      <div class="foods-wrapper" ref='foodsWrapper'>
-        <ul>
-          <li v-for="item in goods" class="food-list food-list-hook">
-            <h1 class="title">{{item.name}}</h1>
-            <ul>
-              <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item border-1px">
-                <div class="icon">
-                  <img width="57" height="57" :src="food.icon"></img>
-                </div>
-                <div class="content">
-                  <h2 class="name">{{food.name}}</h2>
-                  <p class="desc">{{food.description}}</p>
-                  <div class="extra">
-                    <span class="count">月售{{food.sellCount}}份</span>
-                    <span>好评率{{food.rating}}%</span>
-                  </div>
-                  <div class="price">
-                    <span class="now">
-                      <span class="doller">¥</span>{{food.price}}</span>
-                    <span class="old" v-show="food.oldPrice">
-                      ¥{{food.oldPrice}}</span>
-                  </div>
-                  <div class="cartcontrol-wrapper">
-                    <cartcontrol :event-hub="eventHub" :food="food"></cartcontrol>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <shopcart ref='shopcart' :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+      <Food :event-hub="eventHub" :food="selectedFood" ref="food"></Food>
     </div>
-    <Food :event-hub="eventHub" :food="selectedFood" ref="food"></Food>
-
-  </div>
+  </transition>
 </template>
 
 
@@ -169,6 +170,15 @@ export default {
 
 <style lang="scss" rel="stylesheet/scss">
 @import "../../common/scss/mixin.scss";
+
+.goods-wrapper {
+  transition: all .3s;
+  opacity: 1;
+  &.goods-enter,
+  &.goods-leave-active {
+    opacity: 0;
+  }
+}
 
 .goods {
   display: flex;

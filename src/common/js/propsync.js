@@ -32,6 +32,7 @@
  *     type: String,
  *     default: "xxx",
  *     propsync: false//增加此props的属性，则本mixin会忽略xxx
+ *     deep: true // 增加此deep的属性,则本mixin会对该属性进行深度监测
  *   }
  * }
  */
@@ -45,6 +46,7 @@ const emitPropsChangeName = 'onPropsChange';
  * 可在组件属性中定义当前props是否参加本mixin实现双向绑定。
  */
 const isEnableName = 'propsync';
+const isDeepName = 'deep';
 /**
  * 【配置】
  * 根据prop的名称生成对应的data属性名，可自行修改生成后的名称。
@@ -87,7 +89,9 @@ export default {
     propsKeys.forEach((prop) => {
       const dataName = getDataName(prop);
       let isEnable = that.$options.props[prop][isEnableName];
+      let isDeep = that.$options.props[prop][isDeepName];
       isEnable = (typeof isEnable === 'boolean') ? isEnable : true;
+      isDeep = (typeof isDeep === 'boolean') ? isDeep : false;
       if (!isEnable) {
         return;
       }
@@ -100,7 +104,9 @@ export default {
       // [监听所有属性映射到组件内的变量]
       const dataFn = that.$watch(dataName, (newVal, oldVal) => {
         that.$emit(emitPropsChangeName, prop, newVal, oldVal); // 将组件内p_prop通知给组件外(调用方)
-      }, {});
+      }, {
+        deep: isDeep,
+      });
       unwatchDataFnArr.push(dataFn);
     });
   },
