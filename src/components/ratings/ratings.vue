@@ -30,7 +30,7 @@
         <ratingselect @onPropsChange="ratingSelectChange" :select-type="selectType" :only-content="onlyContent" :ratings="ratings"></ratingselect>
         <div class="rating-wrapper">
           <ul>
-            <transition name="rating" key="rating.username" v-for="rating in ratings">
+            <transition name="rating" key="rating.username" v-for="rating in ratings" :key="rating.rateType">
               <li v-show="needShow(rating.rateType,rating.text)" class="rating-item">
                 <div class="avatar">
                   <img width="28" height="28" :src="rating.avatar">
@@ -44,7 +44,7 @@
                   <p class="text">{{rating.text?rating.text:"该用户没有评价内容"}}</p>
                   <div class="recommend" v-show="rating.recommend && rating.recommend.length>0">
                     <span class="icon-thumb_up"></span>
-                    <span class="item" v-for="item in rating.recommend">{{item}}</span>
+                    <span class="item" v-for="item in rating.recommend" :key="item">{{item}}</span>
                   </div>
                   <div class="time">{{rating.rateTime | formatDate}}</div>
                 </div>

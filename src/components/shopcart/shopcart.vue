@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="ball-container">
-          <transition name="drop" v-for="ball in balls" key="ball" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+          <transition name="drop" v-for="(ball,index) in balls" key="ball" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter" :key="index">
             <div v-show="ball.show" class="ball">
               <div class="inner inner-hook"></div>
             </div>
@@ -33,7 +33,7 @@
             </div>
             <div class="list-content" ref="listContent">
               <ul>
-                <li class="food" v-for="food in selectFoods">
+                <li class="food" v-for="food in selectFoods" :key="food.name">
                   <span class="name">{{food.name}}</span>
                   <div class="price">
                     <span>￥{{food.price * food.count}}</span>
