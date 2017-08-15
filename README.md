@@ -1,21 +1,17 @@
-# sell
+# 高仿饿了么商家页面2.0版本
 
-> sell app
-
-## Build Setup
+## 构建步骤
 
 ``` bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 服务器的 localhost:8080 进行开发模式
 npm run dev
 
-# build for production with minification
+# 构建程序
 npm run build
 
-# build for production and view the bundle analyzer report
+# 构建生产环境文件和查看分析报告
 npm run build --report
 ```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
