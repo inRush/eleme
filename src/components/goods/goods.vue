@@ -100,7 +100,7 @@ export default {
   },
   created() {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
-    axios.get('/api/goods').then((response) => {
+    axios.get('http://localhost:8080/api/goods').then((response) => {
       const res = response.data;
       if (res.errno === ERR_OK) {
         this.goods = res.data;

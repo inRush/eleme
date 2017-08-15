@@ -30,24 +30,26 @@
         <ratingselect @onPropsChange="ratingSelectChange" :select-type="selectType" :only-content="onlyContent" :ratings="ratings"></ratingselect>
         <div class="rating-wrapper">
           <ul>
-            <li v-show="needShow(rating.rateType,rating.text)" v-for="rating in ratings" class="rating-item">
-              <div class="avatar">
-                <img width="28" height="28" :src="rating.avatar">
-              </div>
-              <div class="content">
-                <h1 class="name">{{rating.username}}</h1>
-                <div class="star-wrapper">
-                  <star :size="24" :score="rating.score"></star>
-                  <span class="delivery" v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
+            <transition name="rating" key="rating.username" v-for="rating in ratings">
+              <li v-show="needShow(rating.rateType,rating.text)" class="rating-item">
+                <div class="avatar">
+                  <img width="28" height="28" :src="rating.avatar">
                 </div>
-                <p class="text">{{rating.text?rating.text:"该用户没有评价内容"}}</p>
-                <div class="recommend" v-show="rating.recommend && rating.recommend.length>0">
-                  <span class="icon-thumb_up"></span>
-                  <span class="item" v-for="item in rating.recommend">{{item}}</span>
+                <div class="content">
+                  <h1 class="name">{{rating.username}}</h1>
+                  <div class="star-wrapper">
+                    <star :size="24" :score="rating.score"></star>
+                    <span class="delivery" v-show="rating.deliveryTime">{{rating.deliveryTime}}分钟送达</span>
+                  </div>
+                  <p class="text">{{rating.text?rating.text:"该用户没有评价内容"}}</p>
+                  <div class="recommend" v-show="rating.recommend && rating.recommend.length>0">
+                    <span class="icon-thumb_up"></span>
+                    <span class="item" v-for="item in rating.recommend">{{item}}</span>
+                  </div>
+                  <div class="time">{{rating.rateTime | formatDate}}</div>
                 </div>
-                <div class="time">{{rating.rateTime | formatDate}}</div>
-              </div>
-            </li>
+              </li>
+            </transition>
           </ul>
         </div>
       </div>
@@ -77,7 +79,7 @@ export default {
     },
   },
   created() {
-    axios.get('/api/ratings').then((response) => {
+    axios.get('http://localhost:8080/api/ratings').then((response) => {
       const res = response.data;
       if (res.errno === ERR_OK) {
         this.ratings = res.data;
@@ -237,6 +239,14 @@ export default {
       display: flex;
       padding: 18px 0;
       @include border-1px(rgba(7, 17, 27, .1));
+      transition: all .5s;
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      &.rating-enter,
+      &.rating-leave-active {
+        opacity: 0;
+        transform: translate3d(50px, 0, 0);
+      }
       .avatar {
         flex: 0 0 28px;
         margin-right: 12px;

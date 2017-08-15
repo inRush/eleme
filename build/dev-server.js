@@ -29,6 +29,19 @@ var goods = appData.goods;
 var ratings = appData.ratings;
 
 var apiRoutes = express.Router();
+app.all('*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  //新增x-access-token头部标记来避免跨域失败
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With ,x-access-token');
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Credentials', "true");
+  //相应options请求的检测
+  if (req.method == 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+})
 
 apiRoutes.get('/seller', function (req, res) {
   res.json({
@@ -51,7 +64,7 @@ apiRoutes.get('/ratings', function (req, res) {
   })
 })
 
-app.use('/api',apiRoutes);
+app.use('/api', apiRoutes);
 
 var compiler = webpack(webpackConfig)
 
