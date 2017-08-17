@@ -105,7 +105,9 @@ export default {
     ratingSelectChange(propName, newVal, oldVal) {
       this[propName] = newVal;
       this.$nextTick(() => {
-        this.scroll.refresh();
+        setTimeout(() => {
+          this.scroll.refresh();
+        }, 500);
       });
     },
     needShow(type, text) {
