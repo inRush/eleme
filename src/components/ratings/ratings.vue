@@ -79,7 +79,7 @@ export default {
     },
   },
   created() {
-    axios.get('http://localhost:8080/api/ratings').then((response) => {
+    axios.get('/api/ratings').then((response) => {
       const res = response.data;
       if (res.errno === ERR_OK) {
         this.ratings = res.data;

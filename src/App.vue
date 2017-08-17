@@ -38,7 +38,7 @@ export default {
     };
   },
   created() {
-    axios.get('http://localhost:8080/api/seller').then((response) => {
+    axios.get('/api/seller').then((response) => {
       const res = response.data;
       if (res.errno === ERR_OK) {
         this.seller = Object.assign({}, this.seller, res.data);
