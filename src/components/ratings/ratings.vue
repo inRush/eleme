@@ -104,11 +104,12 @@ export default {
   methods: {
     ratingSelectChange(propName, newVal, oldVal) {
       this[propName] = newVal;
-      this.$nextTick(() => {
-        setTimeout(() => {
+      // 等待评价列表的动画完成,然后再刷新scroll的高度
+      setTimeout(() => {
+        this.$nextTick(() => {
           this.scroll.refresh();
-        }, 500);
-      });
+        });
+      }, 600);
     },
     needShow(type, text) {
       if (this.onlyContent && !text) {
