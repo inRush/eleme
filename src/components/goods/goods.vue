@@ -100,7 +100,7 @@ export default {
   },
   created() {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
-    axios.get('http://localhost:8080/api/goods').then((response) => {
+    axios.get('/api/goods').then((response) => {
       const res = response.data;
       if (res.errno === ERR_OK) {
         this.goods = res.data;
@@ -134,6 +134,7 @@ export default {
     _drop(target) {
       // 体验优化,异步执行下落动画
       this.$nextTick(() => {
+        // 执行shopcart的drop方法,传入点击的元素,使得小球从点击处掉落
         this.$refs.shopcart.drop(target);
       });
     },

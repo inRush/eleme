@@ -4,8 +4,8 @@
       <div class="content">
         <div class="content-left" @click="toggleList">
           <!--购物车logo-->
-          <div class="logo-wrapper">
-            <div class="logo " :class="{'hightlight':totalCount > 0}">
+          <div class="logo-wrapper" ref="logo">
+            <div class="logo" :class="{'hightlight':totalCount > 0}">
               <i class="icon-shopping_cart" :class="{'hightlight':totalCount > 0}"></i>
             </div>
             <div class="num" v-show="totalCount > 0">{{totalCount>99?'99+':totalCount}}</div>
@@ -57,6 +57,7 @@
 <script>
 import cartcontrol from 'components/cartcontrol/cartcontrol';
 import BScroll from 'better-scroll';
+import animations from 'create-keyframe-animation';
 
 export default {
   props: {
@@ -147,6 +148,7 @@ export default {
     },
   },
   methods: {
+    // 外部调用,传入点击的元素
     drop(el) {
       for (let i = 0; i < this.balls.length; i += 1) {
         const ball = this.balls[i];
@@ -163,10 +165,13 @@ export default {
       while ((count -= 1) >= 0) {
         const ball = this.balls[count];
         if (ball.show) {
+          // 获取点击元素的位置,ball.el在drop方法中设置
           const rect = ball.el.getBoundingClientRect();
+          // 计算小球起始位置的x,y坐标
           const x = rect.left - 32;
           const y = -(window.innerHeight - rect.top - 32);
-          el.style.display = '';
+
+          // 设置小球的起始位置
           el.style.webkitTransform = `translate3D(0,${y}px,0)`;
           el.style.transform = `translate3D(0,${y}px,0)`;
           const inner = el.getElementsByClassName('inner-hook')[0];
@@ -175,25 +180,75 @@ export default {
         }
       }
     },
-    enter(el) {
+    enter(el, done) {
       /* eslint-disable no-unused-vars */
       const refresh = el.offsetHeight;// 触发浏览器重绘，offsetWidth、offsetTop等方法都可以触发
-      this.$nextTick(() => {
-        el.style.display = '';
-        el.style.webkitTransform = 'translate3D(0,0,0)';
-        el.style.transform = 'translate3D(0,0,0)';
-        const inner = el.getElementsByClassName('inner-hook')[0];
-        inner.style.webkitTransform = 'translate3D(0,0,0)';
-        inner.style.transform = 'translate3D(0,0,0)';
-      });
-      // done();
+      el.style.display = ''; // 显示小球
+
+      // 还原小球的位置
+      el.style.webkitTransform = 'translate3D(0,0,0)';
+      el.style.transform = 'translate3D(0,0,0)';
+      const inner = el.getElementsByClassName('inner-hook')[0];
+      inner.style.webkitTransform = 'translate3D(0,0,0)';
+      inner.style.transform = 'translate3D(0,0,0)';
+      el.addEventListener('transitionend', done);
     },
     afterEnter(el) {
+      // 弹出下落小球数组中
       const ball = this.dropBalls.shift();
       if (ball) {
-        ball.show = false;
-        el.style.display = 'none';
+        ball.show = false; // 设置小球的显示状态为flase
+        el.style.display = 'none'; // 隐藏小球
       }
+      // 创建购物车动画
+      const animation = {
+        0: {
+          transform: 'scale(1)',
+        },
+        14.28: {
+          transform: 'scale(0.8)',
+        },
+        28.57: {
+          transform: 'scale(1.15)',
+        },
+
+        42.85: {
+          transform: 'scale(0.92)',
+        },
+
+        57.14: {
+          transform: 'scale(1.08)',
+        },
+
+        71.42: {
+          transform: 'scale(0.99)',
+        },
+
+        85.71: {
+          transform: 'scale(1.02)',
+        },
+
+        100: {
+          transform: 'scale(1)',
+        },
+      };
+      // 注册动画
+      animations.registerAnimation({
+        name: 'logoScale',
+        animation,
+        presets: {
+          duration: 600,
+          easing: 'ease-out',
+        },
+      });
+      if (!this.$refs.logo.style.animation) {
+        this.$refs.logo.style.animation = '';
+      }
+      // 开启动画
+      animations.runAnimation(this.$refs.logo, 'logoScale', () => {
+        animations.unregisterAnimation('logoScale');
+        this.$refs.logo.style.animation = '';
+      });
     },
     toggleList() {
       if (!this.totalCount) {
@@ -224,7 +279,7 @@ export default {
 
 <style lang="scss" rel="stylesheet/scss">
 @import "../../common/scss/mixin.scss";
-
+// @import "../../common/scss/animation.scss";
 .shopcart {
   position: fixed;
   left: 0;
@@ -313,7 +368,6 @@ export default {
     .content-right {
       flex: 0 0 105px;
       width: 105px;
-
       .pay {
         height: 48px;
         line-height: 48px;
